@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Furniture Rescue Race — Version 8 (Circular Strategies)</title>
+<meta name="description" content="A circular-economy furniture game: diagnose customer needs, choose between Retain, Repair, Aesthetic refresh, Adapt, Reconfigure and Repurpose, and see evidence-based impacts linked to the UN Sustainable Development Goals.">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#efeae1;color:#382f2b;font:16px system-ui,-apple-system,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer;border:1px solid #cbbeb1;border-radius:10px;padding:10px 16px;background:#fffaf3;color:#382f2b}button:hover{background:#ece5d8}button:disabled{cursor:default;opacity:.5}.primary{background:#34654b;color:white;border-color:#34654b}.primary:hover{background:#28513c}main{max-width:1080px;margin:16px auto;padding:18px;background:#faf7f1;border-radius:22px;box-shadow:0 8px 35px #59432a18}h1{font-size:clamp(20px,3vw,29px);margin:0 0 12px}h2{font-size:18px;margin:0 0 10px}.card{background:white;border:1px solid #dfd5c8;border-radius:16px;padding:15px}.hud{display:flex;gap:18px;flex-wrap:wrap;align-items:center}.hud .tools{display:flex;gap:6px;flex-wrap:wrap}.impact-box{flex:1;min-width:210px}.meter{height:13px;background:#e8e4df;border-radius:9px;overflow:hidden;margin-top:6px}#impactBar{height:100%;width:0;background:#458163;transition:width .2s}.top-panels{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}.muted{font-size:13px;color:#71645b;line-height:1.7}.bag{display:flex;gap:7px;flex-wrap:wrap;min-height:80px}.slot{padding:5px;width:68px;min-height:86px;border:2px solid #d6c7b6;background:#f7f4ee;border-radius:10px;font-size:11px;text-align:center}.slot.selected{outline:3px solid #b89965}.slot.healthy{border-color:#729c78}.slot.damaged{border-color:#be7770}.slot canvas{display:block;width:54px;height:48px}.source{display:block;color:#675b50;font-size:10px}.orders{margin:0;padding:0;list-style:none}.orders li{padding:8px 0;border-bottom:1px dashed #dfd5c8}.orders li:first-child{font-weight:700;color:#34654b}#board{display:block;width:100%;height:auto;border-radius:15px;border:1px solid #d6c8b4;touch-action:none}#message{min-height:50px;margin:12px 0;line-height:1.6;background:#f0eadf;border-radius:10px;padding:12px}.bottom{display:grid;grid-template-columns:1fr 230px;gap:20px;align-items:center}.controls{direction:ltr;display:grid;grid-template-columns:repeat(3,58px);gap:5px;justify-content:center}.controls button{font-size:22px;padding:9px;touch-action:none;user-select:none}.controls button[data-move="up"]{grid-column:2}.controls button[data-move="left"]{grid-column:1}.interact{grid-column:1/-1;font-size:16px!important;background:#34654b;color:white}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.gallery{display:flex;gap:12px;align-items:center;min-height:130px}.gallery canvas{width:180px;height:125px;background:#f4f0e8;border-radius:12px}.overlay{position:fixed;inset:0;background:#32261b88;display:flex;align-items:center;justify-content:center;z-index:100;padding:18px}.overlay[hidden]{display:none}#finishOverlay,#consultOverlay{z-index:110}#evidenceOverlay{z-index:120}.dialog{width:min(680px,100%);max-height:92vh;overflow:auto;border-radius:20px;background:#fffcf7;padding:24px;box-shadow:0 20px 70px #0003}.dialog.wide{width:min(1020px,100%)}.dialog h2{font-size:25px}.dialog h3{font-size:16px;margin:16px 0 6px}.dialog p,.dialog li{line-height:1.9}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{padding:12px;background:#f2ecdf;border-radius:12px;text-align:center}.stat b{display:block;font-size:29px}.shop-grid{display:flex;gap:10px;flex-wrap:wrap}.shop-grid button{flex:1;min-width:125px}.shop-grid canvas{display:block;width:80px;height:65px;margin:auto}#repairPreview{width:220px;height:160px;max-width:100%;display:block;margin:auto}#repairStatus{min-height:30px}.progress{width:100%;height:12px;accent-color:#34654b}.mode-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.mode-row label{background:#eee7db;padding:12px;border-radius:10px}.notice{padding:12px;border-left:4px solid #b89965;background:#f3ecdf;font-size:14px;line-height:1.8}#endLesson{padding:14px;background:#edf3eb;border-radius:10px}.legend{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0;font-size:13px}
+.consult-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.customer{display:flex;gap:14px;align-items:flex-start;background:#f2ecdf;border-radius:14px;padding:14px;margin:8px 0 6px}.avatar{font-size:46px;line-height:1}.customer blockquote{margin:6px 0 0;font-style:italic;line-height:1.7}.questions{display:grid;gap:6px}.qrow{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 10px;background:#f7f2e9;border-radius:10px;flex-wrap:wrap}.qrow span{flex:1;min-width:220px;font-size:15px}.seg{display:flex;gap:4px}.seg button{padding:6px 11px;font-size:14px}.seg button[aria-pressed="true"]{background:#34654b;color:#fff;border-color:#34654b}.strats{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px;margin-top:12px}.strat{border:2px solid #dfd5c8;border-radius:14px;padding:12px;background:#fff;display:flex;flex-direction:column;gap:8px}.strat.best{border-color:#34654b;box-shadow:0 0 0 3px #34654b22}.strat.good{border-color:#c9a86c}.strat.weak{background:#fbf9f6}.strat header{display:flex;gap:10px;align-items:center}.sicon{font-size:30px}.strat h4{margin:0;font-size:17px}.strat small{color:#6b5f55;line-height:1.5;display:block}.badge{font-size:11px;padding:2px 8px;border-radius:20px;background:#e8e4df;vertical-align:middle;margin-left:4px;font-weight:600;white-space:nowrap;display:inline-block}.best .badge{background:#34654b;color:#fff}.good .badge{background:#f3e3c2}.fit{height:8px;background:#ece5d8;border-radius:6px;overflow:hidden}.fit i{display:block;height:100%;background:#458163}.weak .fit i{background:#b9ada2}.strat p{margin:0;font-size:13px;line-height:1.55}.why{color:#4d4239}.imp{display:grid;gap:6px;margin-top:6px}.refs{color:#5d5249}.refs a,.ref-list a{color:#2f6a4b}.sdgs{display:flex;flex-wrap:wrap;gap:5px}.sdg{background:var(--c);color:#fff;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:6px}.sdglist{font-size:12.5px;margin:4px 0 0;padding-left:18px}.dialog .sdglist li{line-height:1.55}.job{background:#f5efe4;padding:8px;border-radius:8px}details summary{cursor:pointer;font-weight:600;font-size:13.5px;color:#34654b}.note-ok{background:#edf3eb;border-left:4px solid #34654b;padding:10px 12px;border-radius:8px;line-height:1.6;margin:8px 0}.note-ok:empty{display:none}#helperSummary textarea{width:100%;min-height:170px;font:13px/1.5 ui-monospace,Consolas,monospace;border-radius:10px;border:1px solid #cbbeb1;padding:10px;background:#fff}input[type=text]{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid #cbbeb1;width:100%;max-width:360px}.dialog .ref-list li{margin-bottom:8px;line-height:1.6;font-size:14px}.hier{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:13px}.hier span{background:#e6efe6;padding:4px 8px;border-radius:6px}.hier span.low{background:#f1e2dc}
+@media(max-width:700px){main{padding:10px;margin:0;border-radius:0}.top-panels{grid-template-columns:1fr}.bottom{grid-template-columns:1fr}.hud{gap:10px}.slot{width:61px}.slot canvas{width:47px}.stats{grid-template-columns:repeat(2,1fr)}.gallery canvas{width:140px;height:100px}.dialog{padding:16px}}
+</style></head><body><main>
+<h1>🪑 Furniture Rescue Race — Circular Strategies</h1>
+<div class="card hud"><b id="modeLabel">🌿 Relaxed</b><span id="timeLabel">⏱ No timer</span><b id="coinsLabel">🪙 24</b><b id="scoreLabel">⭐ 0</b><b id="satLabel">😊 –</b><div class="impact-box"><span id="impactLabel">🌍 Environmental impact: 0 / 100</span><div class="meter" role="progressbar" aria-label="Environmental impact meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="impactMeter"><div id="impactBar"></div></div></div><div class="tools"><button id="helperBtn">🧭 Decision Helper</button><button id="evidenceBtn">📚 Evidence &amp; SDGs</button><button id="restartBtn">New Round</button></div></div>
+<div class="top-panels"><section class="card"><h2>📋 Customer Orders</h2><canvas id="orderPreview" width="300" height="210" style="display:block;width:180px;height:126px;float:right" aria-label="Current job design preview"></canvas><ol id="orders" class="orders"></ol><p id="needsChecklist" class="muted" style="clear:both"></p><div id="colors" class="actions" aria-label="Furniture colour"></div><p id="goalLabel" class="muted"></p></section><section class="card"><h2>🎒 Your Bag <small class="muted">(click a part to select it)</small></h2><div id="bag" class="bag"></div><p id="bagCount" class="muted"></p><p class="muted">Red outlines show damaged parts; green outlines show healthy parts. Each job only needs the parts listed for the strategy you chose — the rest of the customer’s furniture is kept.</p></section></div>
+<canvas id="board" width="960" height="640" tabindex="0" aria-label="Workshop map. Move with arrow keys or WASD and press E to interact."></canvas>
+<div class="legend"><span>🤝 Customer: diagnose &amp; choose a strategy</span><span>🔧 Free repair</span><span>🎨 Finish (aesthetic refresh)</span><span>🛒 Buy: 8 coins, +20 impact</span><span>🗑 Discard: +10 impact</span><span>📦 Deliver</span></div>
+<p id="message" role="status" aria-live="polite"></p>
+<div class="bottom"><div><div class="card gallery"><canvas id="creation" width="300" height="210"></canvas><div><h2>Your Latest Rescue</h2><p id="creationText" class="muted">Your finished furniture will appear here when you deliver an order.</p></div></div><p class="muted">Move with arrow keys or WASD. Press E or Interact to pick up parts and use stations. Parts must be at 100% condition. Impact points are symbolic learning scores informed by the research listed under 📚 — they are not measured emissions.</p></div><div class="controls"><button data-move="up" aria-label="Up">▲</button><button data-move="left" aria-label="Left">◀</button><button data-move="down" aria-label="Down">▼</button><button data-move="right" aria-label="Right">▶</button><button id="interactBtn" class="interact">Interact (E)</button></div></div>
+</main>
+
+<div id="startOverlay" class="overlay"><div class="dialog"><h2>Give Furniture a New Life</h2><p>Six customers bring you furniture they are unsure about. For each one, <strong>diagnose their situation</strong> at the 🤝 Customer desk and choose the best circular strategy:</p><p class="hier"><span>🛋️ Retain</span><span>🔧 Repair</span><span>🎨 Aesthetic refresh</span><span>🧰 Adapt</span><span>🧩 Reconfigure</span><span>🔄 Repurpose</span></p><p>The Decision Helper ranks the options from your answers and shows each option’s environmental, economic and social impacts with peer-reviewed evidence and the Sustainable Development Goals (SDGs) it supports. Then collect and repair parts to complete the job.</p><div class="mode-row"><label><input type="radio" name="mode" value="relaxed" checked> 🌿 Relaxed — 6 customers, no timer</label><label><input type="radio" name="mode" value="challenge"> ⏱ Challenge — 60 points in 120 s (timer pauses during consultations)</label></div><ul><li>Delivery: 15 points + 8 coins. Best-fit strategy: +10. Also-possible strategy: +4.</li><li>Accurate diagnosis (6–7 of 7 answers match the customer): +3. Only reused parts: +5.</li><li>Each strategy adds a small symbolic impact (Retain 0 → Repurpose 6). Buying adds 20, discarding 10.</li></ul><div class="notice">Want to use the tool for a real piece of furniture? Click <strong>🧭 Decision Helper</strong> — it works without playing the game and gives a summary you can copy for a customer.</div><div class="actions"><button id="startBtn" class="primary">Start Round</button><button id="startHelper">🧭 Decision Helper only</button><button id="startEvidence">📚 Evidence &amp; SDGs</button></div></div></div>
+
+<div id="consultOverlay" class="overlay" hidden><div class="dialog wide" role="dialog" aria-labelledby="consultTitle"><div class="consult-head"><h2 id="consultTitle">🤝 Customer Consultation</h2><button id="closeConsult">Close</button></div><div id="consultNote" class="note-ok" role="status"></div><div id="customerCard" class="customer"></div><h3>1. Diagnose — answer as the customer would</h3><p class="muted" id="diagHint"></p><div id="questions" class="questions"></div><div class="actions"><button id="recommendBtn" class="primary">2. Show recommendation</button><button id="resetAnswers">Clear answers</button><button id="consultEvidence">📚 All sources</button></div><div id="recommendation"></div><div id="helperSummary" hidden><h3>3. Summary for the customer</h3><textarea id="summaryText" readonly aria-label="Decision summary"></textarea><div class="actions"><button id="copySummary">Copy summary</button><span id="copyStatus" class="muted" role="status"></span></div></div></div></div>
+
+<div id="evidenceOverlay" class="overlay" hidden><div class="dialog wide"><div class="consult-head"><h2>📚 Evidence &amp; SDGs</h2><button id="closeEvidence">Close</button></div><div id="evidenceBody"></div></div></div>
+
+<div id="finishOverlay" class="overlay" hidden><div class="dialog"><h2>🎨 Finish Studio</h2><p>Clean, sand and refinish the customer’s furniture. Required for an <strong>Aesthetic refresh</strong>; optional for any job to pick the delivered colour.</p><div id="finishColors" class="actions" aria-label="Finish colour"></div><canvas id="finishPreview" width="300" height="210" style="display:block;margin:10px auto;width:240px;height:168px"></canvas><p class="notice">Practical tip: choose water-based, low-VOC paints or natural oils — finishes affect indoor air quality (SDG 3.9).</p><p id="finishStatus" role="status"></p><progress id="finishProgress" class="progress" max="100" value="0" hidden></progress><div class="actions"><button id="applyFinish" class="primary">Apply finish</button><button id="closeFinish">Back to Map</button></div></div></div>
+
+<div id="repairOverlay" class="overlay" hidden><div class="dialog"><h2>🔧 Free Repair Workshop</h2><p>Select a part from your bag and repair it to 100% condition.</p><ol><li>Select a damaged part from your bag. Its condition will be below 100%.</li><li>Click “Repair Part for Free.”</li><li>Wait until the part reaches 100%. Repeat for each damaged part, then click “Back to Map.”</li></ol><div id="repairBag" class="bag"></div><canvas id="repairPreview" width="220" height="160"></canvas><p id="repairStatus" role="status"></p><progress id="repairProgress" class="progress" max="100" value="0" hidden></progress><div class="actions"><button id="repairBtn" class="primary">Repair Part for Free</button><button id="returnPart">Return Part to Map (No Impact)</button><button id="closeRepair">Back to Map</button></div></div></div>
+<div id="shopOverlay" class="overlay" hidden><div class="dialog"><h2>🛒 New Parts Store</h2><p>A new part is in 100% condition, costs 8 coins and adds 20 impact points. Using it removes the +5 reuse bonus for that order.</p><p id="shopBalance"></p><div id="shopItems" class="shop-grid"></div><p id="shopMessage" role="status"></p><div class="actions"><button id="closeShop">Back to Map</button></div></div></div>
+<div id="trashOverlay" class="overlay" hidden><div class="dialog"><h2>🗑️ Trash Bin</h2><p>Select a part to discard. Each discarded part adds 10 impact points. You can close this window and keep the part for repair instead.</p><div id="trashBag" class="bag"></div><p id="trashMessage" role="status"></p><div class="actions"><button id="discardBtn">Discard Selected Part (+10 Impact)</button><button id="closeTrash">Keep Part &amp; Return</button></div></div></div>
+<div id="endOverlay" class="overlay" hidden><div class="dialog"><h2 id="endTitle"></h2><p id="endReason"></p><div id="endStats" class="stats"></div><p id="endLesson"></p><div class="actions"><button id="playAgain" class="primary">New Round</button></div></div></div>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- Furniture model ---------- */
+const PARTS={leg:'Leg',top:'Board / Top',cushion:'Cushion'};
+const RECIPES={stool:{name:'Stool'},chair:{name:'Chair'},table:{name:'Table'},bench:{name:'Long Bench'},shelf:{name:'Bookshelf'}};
+
+/* ---------- Evidence base (peer-reviewed) ---------- */
+const REFS={
+ castellani:{short:'Castellani et al., 2015',cite:'Castellani, V., Sala, S., & Mirabella, N. (2015). Beyond the throwaway society: A life cycle-based assessment of the environmental benefit of reuse. Integrated Environmental Assessment and Management, 11(3), 373–382.',doi:'10.1002/ieam.1614'},
+ mugge:{short:'Mugge et al., 2005',cite:'Mugge, R., Schoormans, J. P. L., & Schifferstein, H. N. J. (2005). Design strategies to postpone consumers’ product replacement: The value of a strong person–product relationship. The Design Journal, 8(2), 38–48.',url:'https://scholar.google.com/scholar?q='+encodeURIComponent('Design strategies to postpone consumers product replacement The value of a strong person-product relationship')},
+ denhollander:{short:'den Hollander et al., 2017',cite:'den Hollander, M. C., Bakker, C. A., & Hultink, E. J. (2017). Product design in a circular economy: Development of a typology of key concepts and terms. Journal of Industrial Ecology, 21(3), 517–525.',doi:'10.1111/jiec.12610'},
+ bakker:{short:'Bakker et al., 2014',cite:'Bakker, C., Wang, F., Huisman, J., & den Hollander, M. (2014). Products that go round: Exploring product life extension through design. Journal of Cleaner Production, 69, 10–16.',doi:'10.1016/j.jclepro.2014.01.028'},
+ ackermann:{short:'Ackermann et al., 2021',cite:'Ackermann, L., Tuimaka, M., Pohlmeyer, A. E., & Mugge, R. (2021). Design for product care — Development of design strategies and a toolkit for sustainable consumer behaviour. Journal of Sustainability Research, 3(2), e210013.',doi:'10.20900/jsr20210013'},
+ krystofik:{short:'Krystofik et al., 2018',cite:'Krystofik, M., Luccitti, A., Parnell, K., & Thurston, M. (2018). Adaptive remanufacturing for multiple lifecycles: A case study in office furniture. Resources, Conservation and Recycling, 135, 14–23.',doi:'10.1016/j.resconrec.2017.07.028'},
+ sonego:{short:'Sonego et al., 2018',cite:'Sonego, M., Echeveste, M. E. S., & Galvan Debarba, H. (2018). The role of modularity in sustainable design: A systematic review. Journal of Cleaner Production, 176, 196–209.',doi:'10.1016/j.jclepro.2017.12.106'},
+ bridgens:{short:'Bridgens et al., 2018',cite:'Bridgens, B., Powell, M., Farmer, G., Walsh, C., Reed, E., Royapoor, M., Gosling, P., Hall, J., & Heidrich, O. (2018). Creative upcycling: Reconnecting people, materials and place through making. Journal of Cleaner Production, 189, 145–154.',doi:'10.1016/j.jclepro.2018.03.317'},
+ morseletto:{short:'Morseletto, 2020',cite:'Morseletto, P. (2020). Targets for a circular economy. Resources, Conservation and Recycling, 153, 104553.',doi:'10.1016/j.resconrec.2019.104553'}
+};
+const refUrl=r=>r.doi?'https://doi.org/'+r.doi:r.url;
+const refLink=k=>`<a href="${refUrl(REFS[k])}" target="_blank" rel="noopener" title="${esc(REFS[k].cite)}">${REFS[k].short}</a>`;
+
+/* ---------- UN SDG targets ---------- */
+const SDG_COL={3:'#4C9F38',4:'#C5192D',8:'#A21942',9:'#FD6925',11:'#FD9D24',12:'#BF8B2E',13:'#3F7E44',15:'#56C02B'};
+const SDG={
+ '3.9':'Reduce deaths and illness from hazardous chemicals and pollution',
+ '4.7':'Ensure learners gain knowledge and skills for sustainable development',
+ '8.4':'Improve global resource efficiency in consumption and production',
+ '9.4':'Upgrade and retrofit industries to be resource-efficient and sustainable',
+ '11.6':'Reduce the environmental impact of cities, including municipal waste',
+ '12.2':'Achieve sustainable management and efficient use of natural resources',
+ '12.5':'Substantially reduce waste through prevention, reduction, recycling and reuse',
+ '12.8':'Give people information and awareness for sustainable lifestyles',
+ '13.3':'Improve education and awareness on climate change mitigation',
+ '15.2':'Promote sustainable management of forests'
+};
+const sdgChip=t=>`<span class="sdg" style="--c:${SDG_COL[t.split('.')[0]]}" title="${esc(SDG[t])}">SDG ${t}</span>`;
+
+/* ---------- Six circular strategies ---------- */
+const ORDER=['retain','repair','aesthetic','adapt','reconfigure','repurpose'];
+const STRATS={
+ retain:{name:'Retain',icon:'🛋️',impact:0,what:'Keep using it as it is, with simple care: clean, tighten, protect.',
+  env:'Avoids all new materials, manufacturing and transport. A life-cycle study of reuse found furniture among the categories with the largest avoided impact per item kept in use.',envRefs:['castellani'],
+  econ:'No cost; the money for a replacement is saved or postponed.',
+  social:'Replacement is often triggered by a shift in desire rather than failure. Recognising the value and memories in an item helps people keep it longer.',socRefs:['mugge'],
+  sdgs:[['12.5','No waste is created'],['12.2','Zero new timber or foam used'],['15.2','Less demand for newly harvested wood'],['13.3','Avoided manufacturing emissions']]},
+ repair:{name:'Repair',icon:'🔧',impact:2,what:'Fix the broken or worn parts so it works as before.',
+  env:'Repair restores the original product and keeps its integrity, so most of the embodied materials and energy are preserved; only the failed parts are replaced.',envRefs:['denhollander','bakker'],
+  econ:'Usually much cheaper than buying new, and keeps repair work local.',
+  social:'Repair and maintenance are core forms of product care; designing for and encouraging care helps people keep products for longer.',socRefs:['ackermann'],
+  sdgs:[['12.5','Prevents a whole item becoming waste'],['8.4','More years of use from the same resources'],['4.7','Builds practical repair skills'],['13.3','Avoids emissions of a new product']]},
+ aesthetic:{name:'Aesthetic refresh',icon:'🎨',impact:3,what:'Refresh the look: clean, sand, re-oil, repaint or re-cover.',
+  env:'Needs only a finish or fabric, so material use is small. Choose low-VOC paints or natural oils to limit indoor pollution.',envRefs:['denhollander'],
+  econ:'Low cost and often do-it-yourself.',
+  social:'Personalising and caring for an object strengthens the person–product bond, which postpones replacement.',socRefs:['mugge','ackermann'],
+  sdgs:[['12.5','Keeps a working item out of the waste stream'],['12.8','Shifts focus from “new” to “cared-for”'],['3.9','Low-VOC finishes protect indoor air']]},
+ adapt:{name:'Adapt',icon:'🧰',impact:5,what:'Add or change parts so it meets a new need (comfort, height, backrest, storage).',
+  env:'Adds a few parts instead of making a whole new product. In an office-furniture life-cycle study, updating and customising old products to meet current demand was environmentally preferable to new production.',envRefs:['krystofik'],
+  econ:'Moderate cost; the same study found this adaptive approach economically viable for businesses.',econRefs:['krystofik'],
+  social:'Fits furniture to the person (ergonomics, accessibility, life stage) instead of replacing it.',
+  sdgs:[['9.4','Upgrades existing products for resource efficiency'],['12.2','Small additions instead of a whole new item'],['12.5','Prevents premature disposal']]},
+ reconfigure:{name:'Reconfigure',icon:'🧩',impact:5,what:'Rearrange existing modules into a new layout (e.g. bench → shelf).',
+  env:'Reuses nearly all components. Modularity can bring benefits across the life cycle, but a systematic review warns it is not automatically sustainable — the benefit depends on users actually reconfiguring.',envRefs:['sonego','krystofik'],
+  econ:'Low to moderate cost; mostly labour and a few fixings.',
+  social:'Lets furniture move with people between homes and life stages, useful for small urban homes.',
+  sdgs:[['9.4','Modular, upgradeable products'],['11.6','Less bulky waste in cities when people move'],['12.5','Components stay in use']]},
+ repurpose:{name:'Repurpose',icon:'🔄',impact:6,what:'Give it or its materials a completely different job (e.g. table legs → plant stand).',
+  env:'Saves materials from waste, but usually needs more work and new parts than lighter strategies. In circular-economy rankings, repurpose sits below reuse and repair but above recycling and energy recovery.',envRefs:['morseletto','denhollander'],
+  econ:'Varies; creative upcycling can add value to discarded materials.',
+  social:'Creative upcycling reconnects people with materials and builds making communities; barriers include space, tools, time and skills.',socRefs:['bridgens'],
+  sdgs:[['12.5','Materials diverted from landfill'],['11.6','Reduces municipal bulky waste'],['4.7','Creative making skills'],['8.4','Higher value from existing materials']]}
+};
+
+/* ---------- Diagnosis questions & decision rules ---------- */
+const QS=[
+ {id:'broken',q:'Is anything broken, cracked, torn or wobbly?'},
+ {id:'sound',q:'Is the main frame still strong and safe?'},
+ {id:'meets',q:'Does it still do the job you need today?'},
+ {id:'looks',q:'Is how it looks (colour, scratches, style) the main reason you want a change?'},
+ {id:'changed',q:'Have your needs changed a little (comfort, height, size, storage)?'},
+ {id:'newjob',q:'Would you like it to do a completely different job?'},
+ {id:'modular',q:'Can it be taken apart and rearranged (bolts, screws, modules)?'}
+];
+// [question, points if Yes, points if No, reason if Yes, reason if No]
+const RULES={
+ retain:[['meets',3,-2,'it still does the job','it no longer does the job'],['broken',-3,1,'something needs fixing first','nothing is broken'],['looks',-1,0,'the look bothers you',null],['changed',-2,0,'your needs have changed',null],['newjob',-3,0,'you want a different function',null]],
+ repair:[['broken',3,-3,'something is broken or worn','nothing needs fixing'],['sound',1,-2,'the frame is sound','the frame is weak'],['meets',1,0,'it still suits you once fixed',null],['newjob',-2,0,'you want a different function',null],['changed',-1,0,'your needs have changed',null]],
+ aesthetic:[['looks',3,-1,'the look is the main issue','the look is not the issue'],['meets',1,-1,'it still works for you','it no longer suits your needs'],['broken',-2,0,'it needs repair first',null],['newjob',-2,0,'you want a different function',null],['changed',-1,0,'your needs have changed',null]],
+ adapt:[['changed',3,-2,'your needs changed a little','your needs haven’t changed'],['sound',1,-2,'the base is sound','the base is too weak'],['newjob',-1,0,'a totally new job may need more than an upgrade',null],['meets',-1,0,'it already does the job',null]],
+ reconfigure:[['modular',2,-3,'its parts can be rearranged','it isn’t modular'],['changed',1,0,'your needs have changed',null],['newjob',2,0,'its parts could form something new',null],['meets',-1,0,'it already does the job',null],['sound',0,-1,null,'the frame is weak']],
+ repurpose:[['newjob',3,-2,'you want a different function','you want the same function'],['sound',0,2,null,'it can’t safely do its old job'],['meets',-2,0,'it still works as it is',null],['broken',1,0,'good parts can be salvaged',null]]
+};
+function scoreStrategy(k,ans){let score=0;const reasons=[];for(const[q,y,n,ry,rn]of RULES[k]){const a=ans[q];if(a==='y'){score+=y;if(ry)reasons.push((y>0?'✔ ':'✖ ')+ry);}else if(a==='n'){score+=n;if(rn)reasons.push((n>0?'✔ ':'✖ ')+rn);}else score+=(y+n)/2;}return{k,score,reasons};}
+function rank(ans){return ORDER.map(k=>scoreStrategy(k,ans)).sort((a,b)=>b.score-a.score||ORDER.indexOf(a.k)-ORDER.indexOf(b.k));}
+function tierIn(list,k){const i=list.findIndex(r=>r.k===k);if(i===0)return'best';return list[i].score>=list[0].score-2?'good':'weak';}
+const TIER_LABEL={best:'Best fit',good:'Also possible',weak:'Less suitable'};
+
+/* ---------- Customer cases ---------- */
+const CASES=[
+ {name:'Maya',avatar:'👩🏾',item:'chair',title:'Oak dining chair',quote:'It was my grandmother’s chair. One leg has cracked and the seat cushion is torn, but the frame is solid and I still use it every day. It’s glued together, so it doesn’t come apart.',
+  facts:{broken:'y',sound:'y',meets:'y',looks:'n',changed:'n',newjob:'n',modular:'n'},jobs:{repair:{needs:{leg:1,cushion:1}}}},
+ {name:'Omar',avatar:'👨🏻',item:'table',title:'Pine side table',quote:'Nothing is broken and it’s the perfect size for my sofa. But the finish is scratched and the colour clashes with my newly painted living room. It’s one solid piece.',
+  facts:{broken:'n',sound:'y',meets:'y',looks:'y',changed:'n',newjob:'n',modular:'n'}},
+ {name:'Lena',avatar:'👩🏼',item:'stool',title:'Three-leg stool',quote:'The stool is sturdy, nothing is damaged. But I now work long hours at my desk and need a cushioned seat and something to lean back on. I still want something to sit on — not a different object.',
+  facts:{broken:'n',sound:'y',meets:'n',looks:'n',changed:'y',newjob:'n',modular:'n'},jobs:{adapt:{needs:{top:1,leg:1,cushion:1},to:'chair'}}},
+ {name:'Kofi',avatar:'👨🏿',item:'bench',title:'Bolt-together bench',quote:'I moved to a tiny flat. I don’t need extra seating any more — I need somewhere for my books. The bench bolts together from boards and legs, and everything is in good shape.',
+  facts:{broken:'n',sound:'y',meets:'n',looks:'n',changed:'y',newjob:'y',modular:'y'},jobs:{reconfigure:{needs:{top:1},to:'shelf'},repurpose:{needs:{top:1,leg:2},to:'shelf'},adapt:{needs:{top:1,leg:2},to:'shelf'}}},
+ {name:'Aisha',avatar:'👩🏽',item:'shelf',title:'Solid wood bookshelf',quote:'It’s sturdy, holds all my books and honestly I like it. I just saw a trendy new one in an advert and wondered whether I should replace mine.',
+  facts:{broken:'n',sound:'y',meets:'y',looks:'n',changed:'n',newjob:'n',modular:'n'}},
+ {name:'Ben',avatar:'🧔🏻',item:'table',title:'Old kitchen table',quote:'The tabletop is warped and split right through, and the whole table wobbles — it isn’t safe to eat at any more. The legs themselves are good. What I’d really like is a small stand for my plants.',
+  facts:{broken:'y',sound:'n',meets:'n',looks:'n',changed:'n',newjob:'y',modular:'n'},jobs:{repair:{needs:{top:1,leg:2}},repurpose:{needs:{top:1},to:'stool'}}}
+];
+function jobFor(c,k){const d={retain:{needs:{},to:c.item},repair:{needs:{},to:c.item},aesthetic:{needs:{},to:c.item},adapt:{needs:{cushion:1},to:c.item},reconfigure:{needs:{leg:2},to:c.item},repurpose:{needs:{top:1,leg:3},to:'stool'}}[k];return{...d,...((c.jobs||{})[k]||{}),finish:k==='aesthetic'};}
+function jobText(c,k){const j=jobFor(c,k);const parts=Object.entries(j.needs).map(([t,n])=>`${n} ${PARTS[t]}`).join(' + ');let t=parts?`Bring ${parts} at 100%`:'No new parts needed';if(j.finish)t+=' + apply a finish at 🎨';if(j.to!==c.item)t+=` → it becomes a ${RECIPES[j.to].name}`;return t+`, then deliver at 📦. Game impact +${STRATS[k].impact}.`;}
+
+/* ---------- Map & state ---------- */
+const COLS=12,ROWS=8,TILE=80,LIMIT=6;
+const stations={desk:{x:5,y:0,icon:'🤝',name:'Customer',fill:'#e4dcf0'},repair:{x:1,y:1,icon:'🔧',name:'Repair',fill:'#dce9d9'},shop:{x:10,y:1,icon:'🛒',name:'Store',fill:'#f3dfb0'},finish:{x:6,y:7,icon:'🎨',name:'Finish',fill:'#f1dbe6'},trash:{x:1,y:6,icon:'🗑️',name:'Trash',fill:'#ead6d0'},delivery:{x:10,y:6,icon:'📦',name:'Delivery',fill:'#d6e5e9'}};
+const COLORS=['#a9c9af','#e6bd8d','#abc3de','#d9abc6','#cba46d'];
+const board=$('board'),ctx=board.getContext('2d');
+let state=null,clock=null,moveRepeat=null,repairTimer=null,repairToken=0,finishTimer=null;
+const consult={mode:'game',answers:{},shown:false,item:''};
+function newState(mode){return{mode,running:true,coins:24,score:0,impact:0,remaining:120,deadline:performance.now()+120000,pausedAt:null,delivered:0,repaired:0,bought:0,discarded:0,reuseDeliveries:0,returned:0,color:'#a9c9af',player:{x:5,y:4},parts:[],inventory:[],selected:null,modal:null,repairing:false,finishing:false,choice:null,answers:{},finished:false,diagCorrect:0,history:[],lastNote:''};}
+const curCase=()=>CASES[state.delivered%CASES.length];
+function say(t){$('message').textContent=t;}
+function stopTimers(){clearInterval(clock);clearInterval(moveRepeat);clearTimeout(repairTimer);clearTimeout(finishTimer);clock=null;moveRepeat=null;repairTimer=null;repairToken++;}
+function pause(){if(state&&state.running&&state.mode==='challenge'&&!state.pausedAt)state.pausedAt=performance.now();}
+function resume(){if(state&&state.pausedAt){state.deadline+=performance.now()-state.pausedAt;state.pausedAt=null;}}
+const ALL_OVERLAYS=['startOverlay','endOverlay','repairOverlay','shopOverlay','trashOverlay','finishOverlay','consultOverlay','evidenceOverlay'];
+function startGame(mode){stopTimers();state=newState(mode);for(const id of ALL_OVERLAYS)$(id).hidden=true;ctx.clearRect(0,0,960,640);$('creation').getContext('2d').clearRect(0,0,300,210);$('creationText').textContent='Your finished furniture will appear here when you deliver an order.';replenish();render();if(mode==='challenge')clock=setInterval(checkDeadline,100);say(`First customer: ${curCase().name}. Diagnose their situation and choose a strategy.`);openConsult('game');}
+function checkDeadline(){if(!state||!state.running||state.mode!=='challenge')return false;if(state.pausedAt){renderHUD();return false;}state.remaining=Math.max(0,Math.ceil((state.deadline-performance.now())/1000));if(state.remaining<=0){endRound(false,'Time is up! The 120-second challenge has ended.');return true;}renderHUD();return false;}
+function canAct(){return state&&state.running&&!checkDeadline();}
+function addImpact(n){state.impact=Math.min(100,state.impact+n);if(state.impact>=80)say('Warning: impact is close to 100. Choose lighter strategies, repair parts, and avoid buying or discarding.');if(state.mode==='challenge'&&state.impact>=100){endRound(false,'The environmental impact meter reached 100.');return true;}return false;}
+function isStation(x,y){return Object.values(stations).some(s=>s.x===x&&s.y===y);}
+function spawn(type){const free=[];for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)if(!isStation(x,y)&&!state.parts.some(p=>p.x===x&&p.y===y)&&!(state.player.x===x&&state.player.y===y))free.push({x,y});if(!free.length)return;const pos=free[Math.floor(Math.random()*free.length)];state.parts.push({...pos,id:uid(),type,condition:Math.random()<.3?100:Math.floor(30+Math.random()*50),origin:'reused'});}
+function uid(){return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():Math.random().toString(36).slice(2);}
+function replenish(){const minimum={top:6,leg:10,cushion:4};for(const type in minimum){let count=state.parts.filter(p=>p.type===type).length;while(count++<minimum[type])spawn(type);}}
+function move(dir){if(!canAct()||state.modal)return;const [dx,dy]={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[dir];state.player.x=Math.max(0,Math.min(COLS-1,state.player.x+dx));state.player.y=Math.max(0,Math.min(ROWS-1,state.player.y+dy));renderMap();const s=Object.values(stations).find(s=>s.x===state.player.x&&s.y===state.player.y);const p=state.parts.find(p=>p.x===state.player.x&&p.y===state.player.y);say(s?s.name+' — Press E or Interact.':p?`${PARTS[p.type]} ${p.condition}% — Press E to pick up.`:'Move to a part or station.');}
+function interact(){if(!canAct()||state.modal)return;const {x,y}=state.player;const station=Object.entries(stations).find(([k,s])=>s.x===x&&s.y===y);if(station){const key=station[0];if(key==='delivery'){deliver();return;}if(key==='desk'){openConsult('game');return;}openModal(key);return;}const index=state.parts.findIndex(p=>p.x===x&&p.y===y);if(index<0){say('Stand on a part or station, then press E.');return;}if(state.inventory.length>=LIMIT){say('Your bag is full. At Repair, return an unwanted part to the map for free, or discard it at Trash (+10 impact).');return;}const [p]=state.parts.splice(index,1);state.inventory.push(p);state.selected=state.inventory.length-1;replenish();render();say(`Picked up: ${PARTS[p.type]} reused (${p.condition}%). ${p.condition<100?'Repair is free at the workshop.':'Healthy part, ready for a job.'}`);}
+function openModal(which){state.modal=which;if(state.selected===null&&state.inventory.length)state.selected=0;$(which+'Overlay').hidden=false;renderBags();if(which==='shop')renderShop();if(which==='repair')renderRepair();if(which==='finish')renderFinish();}
+function closeModal(){if(state.repairing||state.finishing)return;for(const key of ['repair','shop','trash','finish'])$(key+'Overlay').hidden=true;state.modal=null;render();}
+
+/* ---------- Consultation / Decision helper ---------- */
+function openConsult(mode){consult.mode=mode;if(mode==='game'){if(!state||!state.running)return;consult.answers=state.answers;consult.shown=!!state.choice;}else{consult.answers={};consult.shown=false;}if(state&&state.running){if(!state.modal||state.modal==='consult')state.modal='consult';pause();}$('consultOverlay').hidden=false;renderConsult();$('closeConsult').focus();}
+function closeConsult(){$('consultOverlay').hidden=true;if(state&&state.running&&state.modal==='consult'){state.modal=null;resume();render();if(consult.mode==='game'&&!state.choice)say(`No strategy chosen yet for ${curCase().name}. Visit the 🤝 Customer desk when you are ready.`);}}
+function renderConsult(){
+ const game=consult.mode==='game';
+ $('consultTitle').textContent=game?`🤝 Customer Consultation — ${curCase().name}`:'🧭 Furniture Decision Helper';
+ $('consultNote').textContent=game?state.lastNote:'';
+ if(game){const c=curCase();$('customerCard').innerHTML=`<div class="avatar" aria-hidden="true">${c.avatar}</div><div><strong>${esc(c.name)} — ${esc(c.title)}</strong>${state.choice?` <span class="badge">Chosen: ${STRATS[state.choice].icon} ${STRATS[state.choice].name}</span>`:''}<blockquote>“${esc(c.quote)}”</blockquote></div>`;
+  $('diagHint').textContent='Read the customer’s story, then answer each question the way they would. Your diagnosis drives the recommendation — a wrong answer can lead to a poor strategy.';}
+ else{$('customerCard').innerHTML=`<div class="avatar" aria-hidden="true">🪑</div><div style="flex:1"><label for="itemName"><strong>Which piece of furniture is this about?</strong></label><br><input type="text" id="itemName" placeholder="e.g. dining chair, wardrobe, desk" value="${esc(consult.item)}"><p class="muted" style="margin:6px 0 0">Answer the questions for your own furniture (or with a customer). Choose “Not sure” if you don’t know — the helper still ranks all six options.</p></div>`;
+  $('itemName').addEventListener('input',e=>{consult.item=e.target.value;if(consult.shown)renderSummary(rank(consult.answers));});
+  $('diagHint').textContent='Each answer adds or removes points for each strategy. Lighter strategies (Retain, Repair) win ties because they keep the most value.';}
+ const q=$('questions');q.innerHTML='';
+ for(const item of QS){const row=document.createElement('div');row.className='qrow';const label=document.createElement('span');label.textContent=item.q;row.appendChild(label);const seg=document.createElement('div');seg.className='seg';seg.setAttribute('role','group');seg.setAttribute('aria-label',item.q);
+  for(const[v,txt]of[['y','Yes'],['n','No'],['u','Not sure']]){const b=document.createElement('button');b.type='button';b.textContent=txt;b.setAttribute('aria-pressed',String(consult.answers[item.id]===v));b.addEventListener('click',()=>{consult.answers[item.id]=v;renderConsult();});seg.appendChild(b);}
+  row.appendChild(seg);q.appendChild(row);}
+ renderRecommendation();
+}
+function renderRecommendation(){
+ const box=$('recommendation');$('helperSummary').hidden=true;
+ if(!consult.shown){box.innerHTML='';return;}
+ const game=consult.mode==='game',list=rank(consult.answers),answered=QS.filter(x=>consult.answers[x.id]&&consult.answers[x.id]!=='u').length;
+ let html=`<h3>2. Recommendation (${answered}/7 questions answered clearly)</h3><p class="muted">Ranked from most to least suitable for these answers. Open a card to see its environmental, economic and social impacts, the peer-reviewed evidence and the SDG targets it supports.</p><div class="strats">`;
+ list.forEach((r,i)=>{const s=STRATS[r.k],tier=tierIn(list,r.k),w=Math.max(4,Math.min(100,(r.score+9)/17*100));
+  html+=`<article class="strat ${tier}"><header><span class="sicon" aria-hidden="true">${s.icon}</span><div style="flex:1"><h4>${i+1}. ${s.name}<span class="badge">${TIER_LABEL[tier]}</span></h4><small>${s.what}</small></div></header>
+  <div class="fit" aria-label="Fit score ${r.score}"><i style="width:${w}%"></i></div>
+  <p class="why"><strong>Why:</strong> ${r.reasons.length?r.reasons.join(' · '):'no clear signals from your answers'}</p>
+  <details${i===0?' open':''}><summary>Impacts, evidence &amp; SDGs</summary><div class="imp">
+   <p><strong>🌍 Environment:</strong> ${s.env} <span class="refs">(${s.envRefs.map(refLink).join('; ')})</span></p>
+   <p><strong>💰 Economy:</strong> ${s.econ}${s.econRefs?` <span class="refs">(${s.econRefs.map(refLink).join('; ')})</span>`:''}</p>
+   <p><strong>🤝 People:</strong> ${s.social}${s.socRefs?` <span class="refs">(${s.socRefs.map(refLink).join('; ')})</span>`:''}</p>
+   <div class="sdgs">${s.sdgs.map(([t])=>sdgChip(t)).join('')}</div>
+   <ul class="sdglist">${s.sdgs.map(([t,why])=>`<li><strong>SDG ${t}</strong> — ${why}</li>`).join('')}</ul></div></details>
+  ${game?`<p class="job"><strong>Workshop job:</strong> ${jobText(curCase(),r.k)}</p><button class="${i===0?'primary':''} choose" data-k="${r.k}">${state.choice===r.k?'✓ Chosen — keep':'Choose '+s.name}</button>`:''}</article>`;});
+ html+='</div>';box.innerHTML=html;
+ box.querySelectorAll('.choose').forEach(b=>b.addEventListener('click',()=>chooseStrategy(b.dataset.k)));
+ if(!game)renderSummary(list);
+}
+function renderSummary(list){
+ const best=list[0],alts=list.filter((r,i)=>i>0&&tierIn(list,r.k)==='good');
+ const ans=QS.map(x=>`  - ${x.q} ${({y:'Yes',n:'No',u:'Not sure'})[consult.answers[x.id]]||'Not answered'}`).join('\n');
+ const s=STRATS[best.k],refs=[...new Set([...(s.envRefs||[]),...(s.econRefs||[]),...(s.socRefs||[])])];
+ const txt=`FURNITURE DECISION SUMMARY\nItem: ${consult.item||'(not specified)'}\n\nAnswers:\n${ans}\n\nRecommended: ${s.name} — ${s.what}\nWhy: ${best.reasons.map(r=>r.slice(2)).join('; ')||'no strong signals'}\n${alts.length?'Also possible: '+alts.map(r=>STRATS[r.k].name).join(', ')+'\n':''}\nImpacts of ${s.name}:\n  Environment: ${s.env}\n  Economy: ${s.econ}\n  People: ${s.social}\n\nSustainable Development Goals supported:\n${s.sdgs.map(([t,w])=>`  - SDG ${t} (${SDG[t]}): ${w}`).join('\n')}\n\nEvidence:\n${refs.map(k=>`  - ${REFS[k].cite} ${refUrl(REFS[k])}`).join('\n')}\n\nNote: guidance only — check safety (stability, structural cracks) before reusing furniture.`;
+ $('summaryText').value=txt;$('helperSummary').hidden=false;$('copyStatus').textContent='';
+}
+function chooseStrategy(k){
+ if(!state||!state.running)return;const c=curCase();
+ if(state.choice!==k)state.finished=false;
+ state.choice=k;state.diagCorrect=QS.filter(x=>state.answers[x.id]===c.facts[x.id]).length;state.lastNote='';
+ $('consultOverlay').hidden=true;state.modal=null;resume();render();
+ say(`${c.name}: ${STRATS[k].icon} ${STRATS[k].name} chosen. ${jobText(c,k)}`);
+}
+
+/* ---------- Evidence page ---------- */
+function buildEvidence(){
+ const hierarchy=`<p class="hier"><span>Retain / reuse</span>→<span>Repair</span>→<span>Refresh / adapt / reconfigure</span>→<span>Repurpose</span>→<span class="low">Recycle</span>→<span class="low">Recover energy</span>→<span class="low">Landfill</span></p>`;
+ let h=`<p>Circular-economy research ranks strategies by how much product value they keep. Strategies that keep the product whole (retain, repair) usually save more resources than those that break it down; recycling and energy recovery are the least powerful (${refLink('morseletto')}; ${refLink('denhollander')}). Choosing the right one still depends on the situation, which is why the game asks diagnostic questions (${refLink('bakker')}).</p>${hierarchy}<h3>How each strategy links to the SDGs</h3><div class="strats">`;
+ for(const k of ORDER){const s=STRATS[k];h+=`<article class="strat"><header><span class="sicon">${s.icon}</span><h4>${s.name}</h4></header><div class="sdgs">${s.sdgs.map(([t])=>sdgChip(t)).join('')}</div><ul class="sdglist">${s.sdgs.map(([t,w])=>`<li><strong>SDG ${t}</strong> — ${w}</li>`).join('')}</ul></article>`;}
+ h+=`</div><h3>SDG targets used</h3><ul class="sdglist">${Object.entries(SDG).map(([t,d])=>`<li>${sdgChip(t)} ${d}</li>`).join('')}</ul><h3>Peer-reviewed sources</h3><ol class="ref-list">${Object.keys(REFS).map(k=>`<li>${esc(REFS[k].cite)} <a href="${refUrl(REFS[k])}" target="_blank" rel="noopener">${REFS[k].doi?'doi:'+REFS[k].doi:'Find article'}</a></li>`).join('')}</ol><p class="notice">The impact points in the game are symbolic and only show the <em>relative</em> order suggested by this literature. Real impacts depend on materials, distances, and how long the furniture is then used.</p>`;
+ $('evidenceBody').innerHTML=h;
+}
+let evidencePaused=false;
+function openEvidence(){$('evidenceOverlay').hidden=false;evidencePaused=false;if(state&&state.running&&!state.modal){state.modal='evidence';pause();evidencePaused=true;}}
+function closeEvidence(){$('evidenceOverlay').hidden=true;if(evidencePaused&&state&&state.running&&state.modal==='evidence'){state.modal=null;resume();render();}evidencePaused=false;}
+
+/* ---------- Inventory, repair, shop, trash, finish ---------- */
+function renderBags(){for(const id of ['bag','repairBag','trashBag']){const el=$(id);el.innerHTML='';state.inventory.forEach((p,i)=>{const b=document.createElement('button');b.className='slot '+(p.condition===100?'healthy':'damaged')+(state.selected===i?' selected':'');b.title=PARTS[p.type]+' '+p.condition+'%';b.disabled=state.repairing;const c=document.createElement('canvas');c.width=108;c.height=96;drawPart(c.getContext('2d'),p,54,49,.95);b.appendChild(c);const info=document.createElement('div');info.textContent=PARTS[p.type]+' '+p.condition+'%';b.appendChild(info);const src=document.createElement('span');src.className='source';src.textContent=p.origin==='new'?'New 🛒':'Reused ♻️';b.appendChild(src);b.addEventListener('click',()=>{if(!canAct()||state.repairing)return;state.selected=i;renderBags();if(state.modal==='repair')renderRepair();});el.appendChild(b);});if(!state.inventory.length)el.textContent='Your bag is empty — collect parts from the map.';}$('bagCount').textContent=`Bag: ${state.inventory.length} / ${LIMIT}`;}
+function drawPart(c,p,x,y,scale=1){c.save();c.translate(x,y);c.scale(scale,scale);const damage=(100-p.condition)/100;if(p.type==='leg')drawLeg(c,0,14,1.1,'#886349',damage,true);if(p.type==='top')drawTop(c,0,0,76,27,'#cba46d',damage,true);if(p.type==='cushion')drawCushion(c,0,0,65,29,'#dfa6b9',damage,true);c.restore();}
+function renderRepair(){const c=$('repairPreview').getContext('2d');c.clearRect(0,0,220,160);const p=state.inventory[state.selected];$('repairBtn').disabled=!p||p.condition===100||state.repairing;$('returnPart').disabled=!p||state.repairing;$('closeRepair').disabled=state.repairing;if(!p){$('repairStatus').textContent='Select a part from your bag.';return;}drawPart(c,p,110,85,2);$('repairStatus').textContent=`${PARTS[p.type]} — Condition: ${p.condition}% — Cost: 0 coins`;$('repairProgress').hidden=!state.repairing;}
+function repairSelected(){if(!canAct()||state.modal!=='repair'||state.repairing)return;const p=state.inventory[state.selected];if(!p||p.condition===100)return;state.repairing=true;const token=++repairToken;const initial=p.condition,started=performance.now();function tick(){if(token!==repairToken||!state.running)return;if(checkDeadline())return;const progress=Math.min(1,(performance.now()-started)/1000);p.condition=Math.round(initial+(100-initial)*progress);$('repairProgress').value=progress*100;renderRepair();if(progress<1){repairTimer=setTimeout(tick,50);return;}p.condition=100;state.repaired++;state.repairing=false;render();renderRepair();$('repairProgress').hidden=true;say('You repaired a reused part for free and kept it in use.');}renderBags();tick();}
+function renderShop(){const el=$('shopItems');el.innerHTML='';$('shopBalance').textContent=`Balance: ${state.coins} coins | Impact: ${state.impact}/100`;$('shopMessage').textContent='';for(const type of Object.keys(PARTS)){const b=document.createElement('button');const c=document.createElement('canvas');c.width=120;c.height=90;drawPart(c.getContext('2d'),{type,condition:100},60,45,1.25);b.appendChild(c);const label=document.createElement('span');label.textContent=PARTS[type]+' — 8 🪙';b.appendChild(label);b.disabled=state.coins<8||state.inventory.length>=LIMIT;b.addEventListener('click',()=>buy(type));el.appendChild(b);}}
+function buy(type){if(!canAct()||state.modal!=='shop'||!PARTS[type])return false;if(state.coins<8){$('shopMessage').textContent='Not enough coins. Repair reused parts for free instead.';return false;}if(state.inventory.length>=LIMIT){$('shopMessage').textContent='Your bag is full. No coins were charged.';return false;}state.coins-=8;state.bought++;state.inventory.push({id:uid(),type,condition:100,origin:'new'});if(addImpact(20))return true;render();renderShop();$('shopMessage').textContent='New part purchased: −8 coins, +20 impact.'+(state.impact>=80?' Warning: another purchase may end the challenge.':'');return true;}
+function discardSelected(){if(!canAct()||state.modal!=='trash')return false;const i=state.selected;if(i===null||!state.inventory[i]){$('trashMessage').textContent='Select a part first.';return false;}const [p]=state.inventory.splice(i,1);state.discarded++;state.selected=null;if(addImpact(10))return true;render();$('trashMessage').textContent=`Discarded: ${PARTS[p.type]}, adding 10 impact points.`;return true;}
+function returnPart(){if(!canAct()||state.modal!=='repair'||state.repairing)return;const p=state.inventory[state.selected];if(!p)return;const free=[];for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)if(!isStation(x,y)&&!state.parts.some(q=>q.x===x&&q.y===y))free.push({x,y});free.sort((a,b)=>(Math.abs(a.x-state.player.x)+Math.abs(a.y-state.player.y))-(Math.abs(b.x-state.player.x)+Math.abs(b.y-state.player.y)));if(!free.length)return;state.inventory.splice(state.selected,1);Object.assign(p,free[0]);state.parts.push(p);state.selected=null;state.returned++;render();renderRepair();say('Part returned to the map with no waste or extra impact. You can pick it up later.');}
+function previewKey(){const c=curCase();return state.choice?jobFor(c,state.choice).to:c.item;}
+function renderFinish(){const el=$('finishColors');el.innerHTML='';for(const color of COLORS)el.appendChild(swatch(color,()=>{state.color=color;renderFinish();renderDesign();}));drawFurniture($('finishPreview').getContext('2d'),150,105,.95,previewKey(),state.color);const need=state.choice==='aesthetic';$('finishStatus').textContent=state.finished?'Finish applied ✓ — ready to deliver.':need?'Pick a colour, then apply the finish to complete the Aesthetic refresh.':'Optional for this job — it only changes the delivered colour.';$('applyFinish').disabled=state.finishing;$('closeFinish').disabled=state.finishing;}
+function applyFinish(){if(!canAct()||state.modal!=='finish'||state.finishing)return;state.finishing=true;$('finishProgress').hidden=false;const started=performance.now();renderFinish();(function tick(){if(!state.running)return;const pr=Math.min(1,(performance.now()-started)/800);$('finishProgress').value=pr*100;if(pr<1){finishTimer=setTimeout(tick,50);return;}state.finishing=false;state.finished=true;$('finishProgress').hidden=true;renderFinish();renderDesign();say('Finish applied with a low-VOC product.');})();}
+function swatch(color,onClick){const b=document.createElement('button');b.style.background=color;b.style.width='34px';b.style.height='34px';b.style.padding='0';b.style.outline=state.color===color?'3px solid #685c4f':'none';b.setAttribute('aria-label','Choose colour '+color);b.setAttribute('aria-pressed',String(state.color===color));b.addEventListener('click',()=>{if(!canAct())return;onClick();});return b;}
+
+/* ---------- Delivery ---------- */
+function deliver(){
+ if(!canAct())return false;const c=curCase();
+ if(!state.choice){say(`Talk to ${c.name} at the 🤝 Customer desk first and choose a strategy.`);openConsult('game');return false;}
+ const k=state.choice,job=jobFor(c,k),chosen=[];
+ if(job.finish&&!state.finished){say('Aesthetic refresh: apply a finish at the 🎨 Finish station before delivering.');return false;}
+ for(const[type,n]of Object.entries(job.needs)){const cand=state.inventory.filter(p=>p.type===type&&p.condition===100&&!chosen.includes(p)).sort((a,b)=>(a.origin==='new')-(b.origin==='new'));if(cand.length<n){say(`${STRATS[k].name} job for ${c.name}: you need ${n-cand.length} more ${PARTS[type]} at 100%. Repair parts or collect more.`);return false;}chosen.push(...cand.slice(0,n));}
+ const truth=rank(c.facts),tier=tierIn(truth,k),fit={best:10,good:4,weak:0}[tier],sat={best:100,good:75,weak:40}[tier];
+ const allReused=chosen.every(p=>p.origin==='reused'),diagBonus=state.diagCorrect>=6?3:0;
+ const pts=15+fit+(allReused?5:0)+diagBonus;
+ state.inventory=state.inventory.filter(p=>!chosen.includes(p));state.selected=null;state.score+=pts;state.coins+=8;state.delivered++;if(allReused)state.reuseDeliveries++;
+ state.history.push({name:c.name,k,tier,sat,diag:state.diagCorrect});
+ drawFurniture($('creation').getContext('2d'),150,105,1,job.to,state.color);
+ $('creationText').textContent=`${c.name}’s ${RECIPES[job.to].name} — ${STRATS[k].icon} ${STRATS[k].name}. ${allReused?'No new parts used ♻️':'Includes new parts.'}`;
+ const bestK=truth[0].k;
+ let note=`Delivered to ${c.name}: ${STRATS[k].name} — ${TIER_LABEL[tier]} (+${fit}). Satisfaction ${sat}%. Diagnosis ${state.diagCorrect}/7${diagBonus?' (+3)':''}.${allReused?' Reuse bonus +5.':''} Total +${pts} points.`;
+ if(tier!=='best')note+=` A better fit was ${STRATS[bestK].name}, because ${truth[0].reasons.filter(r=>r.startsWith('✔')).map(r=>r.slice(2)).join(', ')}.`;
+ state.lastNote=note;say(note);
+ state.choice=null;state.answers={};state.finished=false;state.diagCorrect=0;
+ if(addImpact(STRATS[k].impact))return true;
+ render();
+ if(state.mode==='relaxed'&&state.delivered>=CASES.length){endRound(true,`You helped all ${CASES.length} customers give their furniture a new life.`);return true;}
+ if(state.mode==='challenge'&&state.score>=60){endRound(true,'You reached 60 points before time ran out while keeping impact below 100.');return true;}
+ setTimeout(()=>{if(state.running&&!state.modal)openConsult('game');},700);
+ return true;
+}
+
+/* ---------- Rendering ---------- */
+function renderHUD(){$('modeLabel').textContent=state.mode==='relaxed'?'🌿 Relaxed':'⚡ Challenge';$('timeLabel').textContent=state.mode==='relaxed'?'⏱ No timer':state.pausedAt?`⏸ ${state.remaining} s (paused)`:`⏱ ${state.remaining} seconds`;$('coinsLabel').textContent='🪙 '+state.coins;$('scoreLabel').textContent='⭐ '+state.score;const sats=state.history.map(h=>h.sat);$('satLabel').textContent='😊 '+(sats.length?Math.round(sats.reduce((a,b)=>a+b,0)/sats.length)+'%':'–');$('impactLabel').textContent=`🌍 Environmental impact: ${state.impact} / 100`;$('impactBar').style.width=state.impact+'%';$('impactBar').style.background=state.impact>=80?'#b9453e':state.impact>=50?'#b5852c':'#458163';$('impactMeter').setAttribute('aria-valuenow',state.impact);$('goalLabel').textContent=state.mode==='relaxed'?`Goal: ${state.delivered} / ${CASES.length} customers — no timer`:`Goal: ${state.score} / 60 points — lose at timeout or 100 impact`;$('orders').innerHTML='';for(let j=0;j<3;j++){const c=CASES[(state.delivered+j)%CASES.length],li=document.createElement('li');li.textContent=j===0?`${c.avatar} ${c.name} — ${c.title}${state.choice?` → ${STRATS[state.choice].icon} ${STRATS[state.choice].name}`:' (strategy not chosen)'}`:`Next: ${c.avatar} ${c.name} — ${c.title}`;$('orders').appendChild(li);}}
+function renderMap(){ctx.clearRect(0,0,960,640);for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){ctx.fillStyle=(x+y)%2?'#e6dbc4':'#eee4cf';ctx.fillRect(x*TILE,y*TILE,TILE,TILE);}for(const[k,s]of Object.entries(stations)){ctx.fillStyle=s.fill;ctx.fillRect(s.x*TILE+3,s.y*TILE+3,74,74);ctx.textAlign='center';ctx.font='30px sans-serif';ctx.fillText(s.icon,s.x*TILE+40,s.y*TILE+35);ctx.fillStyle='#493d32';ctx.font='13px sans-serif';ctx.fillText(s.name,s.x*TILE+40,s.y*TILE+63);const alert=(k==='desk'&&!state.choice)||(k==='finish'&&state.choice==='aesthetic'&&!state.finished);if(alert){ctx.fillStyle='#c0392b';ctx.beginPath();ctx.arc(s.x*TILE+68,s.y*TILE+12,9,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 13px sans-serif';ctx.fillText('!',s.x*TILE+68,s.y*TILE+17);}}for(const p of state.parts){ctx.fillStyle=p.condition===100?'#edf4e7':'#fbefec';ctx.strokeStyle=p.condition===100?'#769971':'#b86762';ctx.lineWidth=3;roundRect(ctx,p.x*TILE+7,p.y*TILE+6,66,65,9,true,true);drawPart(ctx,p,p.x*TILE+40,p.y*TILE+35,.7);ctx.fillStyle='#514337';ctx.font='11px sans-serif';ctx.textAlign='center';ctx.fillText(p.condition+'%',p.x*TILE+40,p.y*TILE+65);}const{x,y}=state.player;ctx.fillStyle='#34654b';ctx.beginPath();ctx.arc(x*TILE+40,y*TILE+38,28,0,Math.PI*2);ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=3;ctx.stroke();ctx.font='33px sans-serif';ctx.textAlign='center';ctx.fillText('👩‍🔧',x*TILE+40,y*TILE+50);}
+function renderDesign(){
+ const c=curCase(),states={},lines=[];
+ if(!state.choice){$('needsChecklist').textContent=`Go to the 🤝 Customer desk to diagnose ${c.name}’s ${c.title.toLowerCase()} and choose a strategy.`;drawFurniture($('orderPreview').getContext('2d'),150,105,.95,c.item,state.color);}
+ else{const job=jobFor(c,state.choice);
+  for(const[type,n]of Object.entries(job.needs)){const all=state.inventory.filter(p=>p.type===type),ready=all.filter(p=>p.condition===100).length,have=Math.min(n,all.length);states[type]=ready>=n?'ready':have>=n?'damaged':'missing';lines.push(`${PARTS[type]}: ${Math.min(ready,n)}/${n} healthy${have<n?' — collect '+(n-have):ready<n?' — repair '+(n-ready):' ✓'}`);}
+  if(job.finish)lines.push(state.finished?'Finish ✓':'Finish — apply at 🎨');
+  if(!lines.length)lines.push('No parts needed — deliver at 📦');
+  $('needsChecklist').textContent=`${STRATS[state.choice].icon} ${STRATS[state.choice].name}: `+lines.join(' | ');
+  drawFurniture($('orderPreview').getContext('2d'),150,105,.95,job.to,state.color,states);}
+ $('colors').innerHTML='';for(const color of COLORS)$('colors').appendChild(swatch(color,()=>{state.color=color;renderDesign();}));
+}
+function render(){renderHUD();renderBags();renderMap();renderDesign();}
+function endRound(won,reason){if(!state.running)return;state.running=false;state.repairing=false;state.finishing=false;stopTimers();state.modal=null;for(const id of ALL_OVERLAYS)$(id).hidden=true;$('endTitle').textContent=won?'🎉 Furniture Rescue Complete!':'Round Over — Try a Different Strategy';$('endReason').textContent=reason;const h=state.history,best=h.filter(x=>x.tier==='best').length,avg=h.length?Math.round(h.reduce((a,x)=>a+x.sat,0)/h.length)+'%':'–';const stats=[['Customers helped',state.delivered],['Best-fit choices',`${best}/${h.length}`],['Avg. satisfaction',avg],['Score',state.score],['Environmental impact',state.impact+'/100'],['Repaired parts',state.repaired],['Bought',state.bought],['Discarded',state.discarded],['Returned to map',state.returned]];$('endStats').innerHTML='';for(const[label,value]of stats){const d=document.createElement('div');d.className='stat';const b=document.createElement('b');b.textContent=value;d.appendChild(b);const t=document.createElement('span');t.textContent=label;d.appendChild(t);$('endStats').appendChild(d);}
+ const used=[...new Set(h.map(x=>x.k))],sdgs=[...new Set(used.flatMap(k=>STRATS[k].sdgs.map(s=>s[0])))].sort((a,b)=>parseFloat(a)-parseFloat(b));
+ let lesson=h.length?'Your choices: '+h.map(x=>`${x.name} → ${STRATS[x.k].name} (${TIER_LABEL[x.tier].toLowerCase()})`).join('; ')+'. ':'';
+ lesson+='Lesson: the best strategy depends on the situation. Keep the product as whole as possible — retain or repair when it still meets the need, refresh when only the look bothers you, adapt or reconfigure when needs change, and repurpose when it can no longer do its old job.';
+ if(state.bought||state.discarded)lesson+=` Purchases added ${state.bought*20} and discards ${state.discarded*10} impact points.`;
+ if(sdgs.length)lesson+=` SDG targets you supported: ${sdgs.map(t=>'SDG '+t).join(', ')}.`;
+ $('endLesson').textContent=lesson;renderHUD();$('endOverlay').hidden=false;}
+function showStart(){if(state?.running){endRound(false,'You ended the round early to start a new one.');return;}$('endOverlay').hidden=true;$('startOverlay').hidden=false;}
+
+/* ---------- Events ---------- */
+$('startBtn').addEventListener('click',()=>startGame(document.querySelector('input[name="mode"]:checked').value));
+$('restartBtn').addEventListener('click',showStart);
+$('playAgain').addEventListener('click',()=>{$('endOverlay').hidden=true;$('startOverlay').hidden=false;});
+$('interactBtn').addEventListener('click',interact);
+$('repairBtn').addEventListener('click',repairSelected);$('returnPart').addEventListener('click',returnPart);$('discardBtn').addEventListener('click',discardSelected);$('applyFinish').addEventListener('click',applyFinish);
+for(const k of ['Repair','Shop','Trash','Finish'])$('close'+k).addEventListener('click',closeModal);
+$('helperBtn').addEventListener('click',()=>{if(state?.running&&state.modal)return;openConsult('free');});
+$('startHelper').addEventListener('click',()=>openConsult('free'));
+$('evidenceBtn').addEventListener('click',openEvidence);$('startEvidence').addEventListener('click',openEvidence);$('consultEvidence').addEventListener('click',openEvidence);$('closeEvidence').addEventListener('click',closeEvidence);
+$('closeConsult').addEventListener('click',closeConsult);
+$('recommendBtn').addEventListener('click',()=>{consult.shown=true;renderRecommendation();$('recommendation').scrollIntoView({behavior:'smooth',block:'start'});});
+$('resetAnswers').addEventListener('click',()=>{for(const k of Object.keys(consult.answers))delete consult.answers[k];consult.shown=false;renderConsult();});
+$('copySummary').addEventListener('click',async()=>{const t=$('summaryText');try{await navigator.clipboard.writeText(t.value);$('copyStatus').textContent='Copied ✓';}catch(e){t.select();document.execCommand('copy');$('copyStatus').textContent='Copied ✓';}});
+const keyDirs={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'};let lastMove=0;
+window.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){if(!$('evidenceOverlay').hidden){closeEvidence();return;}if(!$('consultOverlay').hidden){closeConsult();return;}if(state?.modal)closeModal();return;}
+ if(e.target&&e.target.tagName==='INPUT')return;
+ if(!state||!state.running)return;
+ const dir=keyDirs[e.key]||keyDirs[e.key.toLowerCase()];if(dir&&!state.modal){e.preventDefault();const now=performance.now();if(!e.repeat||now-lastMove>130){move(dir);lastMove=now;}}
+ if(e.key.toLowerCase()==='e'&&!e.repeat&&!state.modal){e.preventDefault();interact();}
+ if(['repair','shop','trash'].includes(state.modal)&&!e.repeat){const i=Number(e.key)-1;if(i>=0&&i<state.inventory.length&&!state.repairing){state.selected=i;renderBags();if(state.modal==='repair')renderRepair();}if(e.key.toLowerCase()==='r'&&state.modal==='repair')repairSelected();}
+});
+document.querySelectorAll('[data-move]').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();clearInterval(moveRepeat);move(b.dataset.move);moveRepeat=setInterval(()=>move(b.dataset.move),150);});});
+for(const event of ['pointerup','pointercancel','blur'])window.addEventListener(event,()=>{clearInterval(moveRepeat);moveRepeat=null;});
+
+/* ---------- Drawing helpers ---------- */
+function roundRect(ctx,x,y,w,h,r,fill,stroke){const min=Math.min(Math.abs(w/2),Math.abs(h/2));if(r>min)r=min;ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();if(fill)ctx.fill();if(stroke)ctx.stroke();}
+function drawCrack(ctx,x,y,len){ctx.beginPath();ctx.moveTo(x,y);const seg=4+Math.floor(len/6);let cx=x,cy=y;for(let i=0;i<seg;i++){cx+=len/seg;cy+=(i%2===0?3:-3);ctx.lineTo(cx,cy);}ctx.stroke();}
+function drawTear(ctx,x,y,len){ctx.beginPath();ctx.moveTo(x,y);let cx=x,cy=y;for(let i=0;i<6;i++){cx+=len/6;cy+=(i%2===0?-4:4);ctx.lineTo(cx,cy);}ctx.stroke();ctx.strokeStyle='rgba(0,0,0,0.4)';ctx.lineWidth=1;for(let i=1;i<6;i++){ctx.beginPath();const sx=x+i*(len/6)-6;ctx.moveTo(sx,y-6);ctx.lineTo(sx+6,y+6);ctx.stroke();}ctx.lineWidth=1;}
+function drawLeg(ctx,x,y,scale=1,color='#6e5a44',damage=0,outline=true){ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);ctx.fillStyle=color;roundRect(ctx,-6,-40,12,40,3,true,false);ctx.fillStyle='#6c6c6c';roundRect(ctx,-10,0,20,6,3,true,false);if(outline){ctx.strokeStyle='rgba(0,0,0,0.15)';ctx.lineWidth=1;roundRect(ctx,-6,-40,12,40,3,false,true);}if(damage>0){ctx.strokeStyle='rgba(0,0,0,0.6)';ctx.lineWidth=1.4;const sev=Math.min(1,damage);const cc=1+Math.floor(sev*2);for(let i=0;i<cc;i++){const y0=-30+i*10;drawCrack(ctx,-4+i*3,y0,6+sev*4);}ctx.lineWidth=1;}ctx.restore();}
+function drawTop(ctx,x,y,w=60,h=28,color='#cfa86e',damage=0,outline=true){ctx.save();ctx.translate(x,y);ctx.fillStyle=color;roundRect(ctx,-w/2,-h/2,w,h,6,true,false);ctx.fillStyle='rgba(0,0,0,0.06)';roundRect(ctx,-w/2+4,-h/2+6,w-8,h-8,5,true,false);if(outline){ctx.strokeStyle='rgba(0,0,0,0.15)';ctx.lineWidth=1;roundRect(ctx,-w/2,-h/2,w,h,6,false,true);}if(damage>0){ctx.strokeStyle='rgba(0,0,0,0.75)';ctx.lineWidth=2;const cracks=1+Math.floor(damage*3);for(let i=0;i<cracks;i++){const sx=-w/2+8+i*10;drawCrack(ctx,sx,-2+i*3,10+damage*8);}ctx.lineWidth=1;}ctx.restore();}
+function drawCushion(ctx,x,y,w=56,h=28,color='#f1a2b0',damage=0,outline=true){ctx.save();ctx.translate(x,y);ctx.fillStyle=color;roundRect(ctx,-w/2,-h/2,w,h,10,true,false);ctx.strokeStyle='rgba(0,0,0,0.08)';ctx.lineWidth=1;ctx.strokeRect(-w/2+4,-h/2+4,w-8,h-8);if(outline){ctx.strokeStyle='rgba(0,0,0,0.15)';ctx.lineWidth=1;roundRect(ctx,-w/2,-h/2,w,h,10,false,true);}if(damage>0){ctx.strokeStyle='rgba(0,0,0,0.7)';ctx.lineWidth=1.8;drawTear(ctx,-6,0,16+damage*10);ctx.lineWidth=1;}ctx.restore();}
+function drawFurniture(c,x,y,scale,key,color,states={}){
+ c.clearRect(0,0,c.canvas.width,c.canvas.height);c.save();c.translate(x,y);c.scale(scale,scale);
+ c.fillStyle='rgba(41,38,32,.10)';c.beginPath();c.ellipse(0,76,104,9,0,0,Math.PI*2);c.fill();
+ function component(type,fn){c.save();const st=states[type];c.globalAlpha=st==='missing'?0.30:1;const fill=st==='missing'?'#b8bdc3':type==='leg'?'#74553e':color;fn(fill);if(st==='damaged'){c.strokeStyle='#c0392b';c.lineWidth=3;drawCrack(c,type==='leg'?-70:-24,type==='leg'?47:-4,26);}c.restore();}
+ function board(type,bx,by,w,h){component(type,fill=>{c.fillStyle=fill;c.strokeStyle='#554334';c.lineWidth=1.5;roundRect(c,bx,by,w,h,4,true,true);c.fillStyle='rgba(255,255,255,.2)';c.fillRect(bx+4,by+3,w-8,3);});}
+ function legs(xs,top,bottom){xs.forEach((lx,i)=>board('leg',lx,top,10,bottom-top-(i%2?4:0)));}
+ if(key==='chair'){board('top',-61,-76,122,49);board('leg',-57,-66,9,99);board('leg',48,-66,9,99);legs([-61,51,-43,33],20,74);board('top',-72,6,144,17);component('cushion',fill=>{c.fillStyle=fill;c.strokeStyle='#554334';roundRect(c,-65,-3,130,19,9,true,true);});c.strokeStyle='rgba(71,54,40,.22)';[-32,0,32].forEach(lx=>{c.beginPath();c.moveTo(lx,-68);c.lineTo(lx,-35);c.stroke();});}
+ else if(key==='shelf'){board('leg',-86,-82,13,155);board('leg',73,-82,13,155);[-76,-12,53].forEach(sy=>board('top',-85,sy,170,15));c.fillStyle='rgba(85,67,52,.30)';[[-70,-58,9,46],[-58,-52,9,40],[-46,-56,8,44],[28,6,9,47],[40,10,8,43]].forEach(([bx,by,w,h])=>c.fillRect(bx,by,w,h));}
+ else if(key==='stool'){legs([-48,-6,36],-4,74);board('top',-62,-20,124,18);}
+ else if(key==='table'){legs([-84,74,-60,50],-8,74);board('top',-98,-26,196,20);}
+ else if(key==='bench'){legs([-104,94,-40,30],-2,74);board('top',-112,-18,110,16);board('top',2,-18,110,16);}
+ c.restore();
+}
+
+/* ---------- Boot ---------- */
+buildEvidence();
+</script>
+</body></html>
